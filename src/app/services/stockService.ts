@@ -271,30 +271,36 @@ type StockAnnouncementResponse = {
   totalRecordNum: number;
   hasMore: boolean;
   totalpages: number;
+  pageNum: number;
+  pageSize: number;
   announcements: StockAnnouncement[];
 };
 
 export const fetchStockAnnouncement = async ({
   stockMarket,
   stockCode,
-  pageSize,
+  pageSize = 10,
   pageNum,
 }: {
   stockMarket: StockMarket;
   stockCode: string;
-  pageSize: number;
+  pageSize?: number;
   pageNum: number;
 }) => {
   const searchParams = new URLSearchParams();
-  const orgId = `${stockMarket === 'SH' ? 'gssh' : 'gssz'}${stockCode}`;
+  const orgId = `${stockMarket === 'SH' ? 'gssh' : 'gssz'}0${stockCode}`;
   searchParams.set('stock', [stockCode, orgId].join(','));
   searchParams.set('pageNum', pageNum.toString());
   searchParams.set('pageSize', pageSize.toString());
   const url = new URL(BASE_URL + '/new/hisAnnouncement/query');
   url.search = searchParams.toString();
   const response = await fetch(url.toString(), {
-    method: 'GET',
+    method: 'POST',
+    cache: 'force-cache',
+    next: {
+      revalidate: ONE_DAY,
+    },
   });
   const rsp = await response.json();
-  return rsp as StockAnnouncementResponse;
+  return { ...rsp, pageNum, pageSize } as StockAnnouncementResponse;
 };
