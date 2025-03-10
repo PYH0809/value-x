@@ -1,4 +1,5 @@
 import { Stock, StockMarket, StockTradeResponse } from '@/types/stock';
+import { apiBaseUrl } from '@/config/site';
 
 type StockListResponse = {
   code: string;
@@ -244,7 +245,7 @@ export const fetchStockTrade = async ({ stockCode, stockMarket }: { stockCode: s
   const searchParams = new URLSearchParams();
   searchParams.set('stockCode', stockCode);
   searchParams.set('stockMarket', stockMarket);
-  const url = new URL(process.env.NEXT_PUBLIC_API_BASE_URL + '/stock/trade');
+  const url = new URL(apiBaseUrl + '/stock/trade');
   url.search = searchParams.toString();
   const response = await fetch(url.toString(), {
     method: 'GET',

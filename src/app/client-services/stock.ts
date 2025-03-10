@@ -1,9 +1,10 @@
 import { StockTradeResponse, Stock, StockMarket, StockWeekTradeResponse } from '@/types/stock';
+import { apiBaseUrl } from '@/config/site';
 
 export const requestStockSearch = async (keyword: string) => {
   const searchParams = new URLSearchParams();
   searchParams.set('keyword', keyword);
-  const url = new URL(process.env.NEXT_PUBLIC_API_BASE_URL + '/stock/search');
+  const url = new URL(apiBaseUrl + '/stock/search');
   url.search = searchParams.toString();
   const response = await fetch(url.toString(), {
     method: 'GET',
@@ -26,7 +27,7 @@ export const requestStockQuestion = async ({
   searchParams.set('stockCode', stockCode);
   searchParams.set('pageNum', pageNum.toString());
   searchParams.set('pageSize', pageSize.toString());
-  const url = new URL(process.env.NEXT_PUBLIC_API_BASE_URL + '/stock/question');
+  const url = new URL(apiBaseUrl + '/stock/question');
   url.search = searchParams.toString();
   const response = await fetch(url.toString(), {
     method: 'GET',
@@ -46,7 +47,7 @@ export const requestStockTrade = async ({
   const searchParams = new URLSearchParams();
   searchParams.set('stockCode', stockCode);
   searchParams.set('stockMarket', stockMarket);
-  const url = new URL(process.env.NEXT_PUBLIC_API_BASE_URL + '/stock/trade');
+  const url = new URL(apiBaseUrl + '/stock/trade');
   url.search = searchParams.toString();
   const response = await fetch(url.toString(), {
     method: 'GET',
@@ -65,7 +66,7 @@ export const requestStockHistoryTrade = async ({
   const searchParams = new URLSearchParams();
   searchParams.set('stockCode', stockCode);
   searchParams.set('stockMarket', stockMarket);
-  const url = new URL(process.env.NEXT_PUBLIC_API_BASE_URL + '/stock/weekTrade');
+  const url = new URL(apiBaseUrl + '/stock/weekTrade');
   url.search = searchParams.toString();
   const response = await fetch(url.toString(), {
     method: 'GET',
