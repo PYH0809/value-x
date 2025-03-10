@@ -7,6 +7,7 @@ import StockPriceRealTime from './price-real-time';
 import StockFinancial from './financia';
 import StockName from './name';
 import StockWeekLineChart from './week-line-chart';
+import StockAnnouncement from './announcement';
 
 export {
   StockEvent,
@@ -15,6 +16,7 @@ export {
   StockWeekLineChart,
   StockTabNavigation,
   StockPriceRealTime,
+  StockAnnouncement,
   StockSearch,
   StockName,
   StockFinancial,

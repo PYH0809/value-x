@@ -10,6 +10,7 @@ import {
   StockFinancial,
   StockPriceRealTime,
   StockWeekLineChart,
+  StockAnnouncement,
 } from '@/components/stock';
 import { Separator } from '@/components/ui/separator';
 import { StockMarket } from '@/types/stock';
@@ -23,7 +24,7 @@ type Props = {
 };
 
 export default async function Stock({ searchParams }: Props) {
-  const { pageNum, code: stockCode, market } = await searchParams;
+  const { pageNum, code: stockCode, market, tab } = await searchParams;
 
   const currentPage = parseInt(pageNum) || 1;
 
@@ -57,7 +58,10 @@ export default async function Stock({ searchParams }: Props) {
           <StockTabNavigation className="mt-24px" items={tabItems}></StockTabNavigation>
           <Separator className="mb-16px mt-4px" />
           <div className="flex flex-col gap-y-24px">
-            <StockQuestion stockCode={stockCode} pageNum={currentPage} pageSize={10}></StockQuestion>
+            {tab === 'qa' && <StockQuestion stockCode={stockCode} pageNum={currentPage} pageSize={10}></StockQuestion>}
+            {tab === 'announcement' && (
+              <StockAnnouncement stockCode={stockCode} stockMarket={market} pageNum={currentPage}></StockAnnouncement>
+            )}
           </div>
         </div>
         <div className="right-bar hidden flex-1 flex-col gap-y-32px xl:flex" style={{ maxWidth: '495px' }}>
