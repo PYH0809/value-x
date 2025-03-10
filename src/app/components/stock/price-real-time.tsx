@@ -50,12 +50,12 @@ const SrockPriceRealTime: React.FC<StockPriceRealTimeProps> = (args: StockPriceR
 
   const formatPercent = useMemo(() => {
     const formatPercent = formatNumber(priceData.percent);
-    return priceData.percent > 0 ? `+${formatPercent}%` : `-${formatPercent}%`;
+    return priceData.percent > 0 ? `+${formatPercent}%` : `${formatPercent}%`;
   }, [priceData.percent]);
 
   const formatChg = useMemo(() => {
     const formatChg = formatNumber(priceData.chg);
-    return priceData.chg > 0 ? `+${formatChg}` : `-${formatChg}`;
+    return priceData.chg > 0 ? `+${formatChg}` : `${formatChg}`;
   }, [priceData.chg]);
 
   const Price = (
