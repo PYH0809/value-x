@@ -8,7 +8,7 @@ export function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = '/stock';
     url.searchParams.set('code', '600519');
-    url.searchParams.set('tab', 'qa');
+    url.searchParams.set('tab', 'announcement');
     url.searchParams.set('pageNum', '1');
     url.searchParams.set('market', 'SH');
     return NextResponse.redirect(url);
