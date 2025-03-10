@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import {
   StockEvent,
@@ -13,14 +14,15 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { StockMarket } from '@/types/stock';
 import './page.css';
+import { fetchStock } from '@/services/stockService';
 
 type TabId = 'qa' | 'announcement' | 'info' | 'document';
 
-export default async function Stock({
-  searchParams,
-}: {
+type Props = {
   searchParams: Promise<{ tab: TabId; pageNum: string; code: string; market: StockMarket }>;
-}) {
+};
+
+export default async function Stock({ searchParams }: Props) {
   const { pageNum, code: stockCode, market } = await searchParams;
 
   const currentPage = parseInt(pageNum) || 1;
@@ -65,6 +67,17 @@ export default async function Stock({
       </div>
     </div>
   );
+}
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const { code, tab } = await searchParams;
+  const stock = await fetchStock(code);
+  const stockName = stock?.name || '';
+  const tabTitle = TAB_NAVIGATION.find((item) => item.id === tab)?.title || '';
+  return {
+    title: `${stockName} - ${tabTitle}`,
+    description: `${stockName} - ${tabTitle}`,
+  };
 }
 
 const TAB_NAVIGATION = [
