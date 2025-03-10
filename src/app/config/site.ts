@@ -1,12 +1,12 @@
 const LOCAL_URL = 'http://localhost:3000';
 
 const url =
-  process.env.NEXT_PUBLIC_SITE_URL || (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`) || LOCAL_URL;
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.NEXT_PUBLIC_VERCEL_URL && `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`) ||
+  (process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL && `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`) ||
+  LOCAL_URL;
 
-export const apiBaseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  (process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}/api`) ||
-  `${LOCAL_URL}/api`;
+export const apiBaseUrl = `${url}/api`;
 
 export const siteConfig = {
   name: 'value-x',
