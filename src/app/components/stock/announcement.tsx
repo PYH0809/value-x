@@ -23,6 +23,7 @@ const StockAnnouncement: React.FC<Props> = async ({ stockCode, stockMarket, page
         <InfoCard
           key={announcement.announcementId}
           title={announcement.announcementTitle}
+          attachmentLink={announcement.adjunctUrl}
           time={formatDate(announcement.announcementTime)}
         />
       ))}

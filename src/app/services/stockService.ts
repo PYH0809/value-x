@@ -13,14 +13,15 @@ const CATEGORY_MAP = {
   A股: 'AStock',
 };
 
-const BASE_URL = 'http://www.cninfo.com.cn';
-const HTTPS_BASE_URL = 'https://irm.cninfo.com.cn';
+const JUCAO_BASE_URL = 'http://www.cninfo.com.cn';
+const JUCAO_STATIC_BASE_URL = 'http://static.cninfo.com.cn';
+const JUCAO_HTTPS_BASE_URL = 'https://irm.cninfo.com.cn';
 const BASE_URL_EASTMONEY = 'https://guba.eastmoney.com/interface/GetData.aspx';
 const ONE_DAY = 60 * 60 * 24;
 // const ONE_WEEK = ONE_DAY * 7;
 
 export const fetchStockList = async (): Promise<Stock[]> => {
-  const response = await fetch(`${BASE_URL}/new/data/szse_stock.json`, {
+  const response = await fetch(`${JUCAO_BASE_URL}/new/data/szse_stock.json`, {
     cache: 'force-cache',
     next: {
       revalidate: ONE_DAY,
@@ -80,7 +81,7 @@ type FinancialDataResponse = {
 };
 
 export const fetchStockFinancialData = async (stockCode: string): Promise<FinancialData> => {
-  const response = await fetch(`${BASE_URL}/data20/companyOverview/getHeadStripData?scode=${stockCode}`, {
+  const response = await fetch(`${JUCAO_BASE_URL}/data20/companyOverview/getHeadStripData?scode=${stockCode}`, {
     cache: 'force-cache',
     next: {
       revalidate: 60 * 60 * 24,
@@ -127,7 +128,7 @@ type IntroductionResponse = {
 };
 
 export const fetchStockIntroduction = async (stockCode: string): Promise<Introduction> => {
-  const response = await fetch(`${BASE_URL}/data20/companyOverview/getCompanyIntroduction?scode=${stockCode}`, {
+  const response = await fetch(`${JUCAO_BASE_URL}/data20/companyOverview/getCompanyIntroduction?scode=${stockCode}`, {
     cache: 'force-cache',
     next: {
       revalidate: 60 * 60 * 24,
@@ -224,7 +225,7 @@ type EventResponse = {
 export const fetchStockEvent = async (stockCode: string) => {
   const searchParams = new URLSearchParams();
   searchParams.set('stockcode', stockCode);
-  const url = new URL(`${HTTPS_BASE_URL}/newircs/company/companyMemo`);
+  const url = new URL(`${JUCAO_HTTPS_BASE_URL}/newircs/company/companyMemo`);
   url.search = searchParams.toString();
 
   const response = await fetch(url.toString(), {
@@ -271,8 +272,8 @@ type StockAnnouncementResponse = {
   totalRecordNum: number;
   hasMore: boolean;
   totalpages: number;
-  pageNum: number;
-  pageSize: number;
+  // pageNum: number;
+  // pageSize: number;
   announcements: StockAnnouncement[];
 };
 
@@ -292,7 +293,7 @@ export const fetchStockAnnouncement = async ({
   searchParams.set('stock', [stockCode, orgId].join(','));
   searchParams.set('pageNum', pageNum.toString());
   searchParams.set('pageSize', pageSize.toString());
-  const url = new URL(BASE_URL + '/new/hisAnnouncement/query');
+  const url = new URL(JUCAO_BASE_URL + '/new/hisAnnouncement/query');
   url.search = searchParams.toString();
   const response = await fetch(url.toString(), {
     method: 'POST',
@@ -301,6 +302,10 @@ export const fetchStockAnnouncement = async ({
       revalidate: ONE_DAY,
     },
   });
-  const rsp = await response.json();
-  return { ...rsp, pageNum, pageSize } as StockAnnouncementResponse;
+  const rsp = (await response.json()) as StockAnnouncementResponse;
+  const announcements = rsp.announcements.map((item) => ({
+    ...item,
+    adjunctUrl: `${JUCAO_STATIC_BASE_URL}/${item.adjunctUrl}`,
+  }));
+  return { ...rsp, announcements, pageNum, pageSize };
 };
