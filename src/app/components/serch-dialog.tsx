@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import {
   CommandDialog,
@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/command';
 import { Button } from '@/components/ui/button';
 import { DialogTitle } from '@/components/ui/dialog';
+import { Search as SearchIcon } from 'lucide-react';
 
 type SearchItem = {
   value: string;
@@ -44,40 +45,17 @@ export function SearchDialog({ ...props }: SearchDialogProps) {
     }
   };
 
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || e.key === '/') {
-        if (
-          (e.target instanceof HTMLElement && e.target.isContentEditable) ||
-          e.target instanceof HTMLInputElement ||
-          e.target instanceof HTMLTextAreaElement ||
-          e.target instanceof HTMLSelectElement
-        ) {
-          return;
-        }
-
-        e.preventDefault();
-        setOpen((open) => !open);
-      }
-    };
-
-    document.addEventListener('keydown', down);
-    return () => document.removeEventListener('keydown', down);
-  }, []);
-
   return (
     <>
       <Button
         variant="outline"
         className={cn(
-          'relative h-8 w-64 justify-start rounded-[0.5rem] bg-muted/50 text-sm font-normal text-muted-foreground shadow-none sm:pr-12'
+          'relative h-8 w-fit justify-start rounded-[0.5rem] bg-muted/50 text-sm font-normal text-muted-foreground shadow-none'
         )}
         onClick={() => setOpen(true)}
       >
-        <span className="lg:inline-flex">{placeholder ?? 'Search...'} </span>
-        <kbd className="pointer-events-none absolute right-[0.3rem] top-[0.3rem] h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
-          <span className="text-xs">⌘</span>K
-        </kbd>
+        <span className="mr-8px hidden md:block lg:inline-flex">{placeholder ?? '搜索公司...'} </span>
+        <SearchIcon size={16} />
       </Button>
       <CommandDialog shouldFilter={shouldFilter} open={open} onOpenChange={handleOpenChange}>
         <DialogTitle className="hidden" />
