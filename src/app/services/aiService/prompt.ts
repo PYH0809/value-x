@@ -41,5 +41,4 @@ const PROMPT_SUMMARY_TEMPLATE = `
 """
 {content}
 """
-请将上述文本整理为格式良好的Markdown文档。
 `;
