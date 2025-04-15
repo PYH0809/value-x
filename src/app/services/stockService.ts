@@ -282,17 +282,26 @@ export const fetchStockAnnouncement = async ({
   stockCode,
   pageSize = 10,
   pageNum,
+  start,
+  end,
 }: {
   stockMarket: StockMarket;
   stockCode: string;
   pageSize?: number;
   pageNum: number;
+  start?: number;
+  end?: number;
 }) => {
   const searchParams = new URLSearchParams();
   const orgId = `${stockMarket === 'SH' ? 'gssh' : 'gssz'}0${stockCode}`;
   searchParams.set('stock', [stockCode, orgId].join(','));
   searchParams.set('pageNum', pageNum.toString());
   searchParams.set('pageSize', pageSize.toString());
+  if (start && end) {
+    const startDay = start ? new Date(start).toISOString().split('T')[0] : '';
+    const endDay = end ? new Date(end).toISOString().split('T')[0] : '';
+    searchParams.set('seDate', `${startDay}~${endDay}`);
+  }
   const url = new URL(JUCAO_BASE_URL + '/new/hisAnnouncement/query');
   url.search = searchParams.toString();
   const response = await fetch(url.toString(), {
