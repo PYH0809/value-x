@@ -1,4 +1,3 @@
-import { NextResponse } from 'next/server';
 import { fetchStockAnnouncement } from '@/services/stockService';
 import { extractPDFTextFromUrl } from '@/services/docService';
 import { chat, generateSummaryPrompt } from '@/services/aiService';
@@ -11,9 +10,6 @@ export async function GET() {
     timestamp: Date.now() - 1000 * 60 * 60 * 24 * 6,
   });
   if (!announcements) return;
-  const result: {
-    [key: string]: string;
-  } = {};
 
   for (const announcement of announcements) {
     if (announcement.adjunctUrl) {
@@ -22,10 +18,8 @@ export async function GET() {
       const prompt = generateSummaryPrompt(text);
       const summary = await chat({ content: prompt });
       if (!summary) continue;
-      result[announcement.announcementId] = summary;
     }
   }
-  return NextResponse.json(result);
 }
 
 async function fetchNewAnnouncements({
