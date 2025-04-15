@@ -277,21 +277,17 @@ type StockAnnouncementResponse = {
   announcements: StockAnnouncement[];
 };
 
-export const fetchStockAnnouncement = async ({
-  stockMarket,
-  stockCode,
-  pageSize = 10,
-  pageNum,
-  start,
-  end,
-}: {
+type StockAnnouncementProps = {
   stockMarket: StockMarket;
   stockCode: string;
   pageSize?: number;
   pageNum: number;
   start?: number;
   end?: number;
-}) => {
+};
+
+export const fetchStockAnnouncement = async (props: StockAnnouncementProps) => {
+  const { stockMarket, stockCode, pageNum = 1, pageSize = 10, start, end } = props;
   const searchParams = new URLSearchParams();
   const orgId = `${stockMarket === 'SH' ? 'gssh' : 'gssz'}0${stockCode}`;
   searchParams.set('stock', [stockCode, orgId].join(','));
@@ -312,7 +308,7 @@ export const fetchStockAnnouncement = async ({
     },
   });
   const rsp = (await response.json()) as StockAnnouncementResponse;
-  if (!rsp?.announcements?.length) return null;
+  if (!rsp?.announcements?.length) return;
   const announcements = rsp.announcements.map((item) => ({
     ...item,
     adjunctUrl: `${JUCAO_STATIC_BASE_URL}/${item.adjunctUrl}`,

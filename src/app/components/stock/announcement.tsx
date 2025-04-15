@@ -15,6 +15,7 @@ type Props = {
 
 const StockAnnouncement: React.FC<Props> = async ({ stockCode, stockMarket, pageNum }) => {
   const rsp = await fetchStockAnnouncement({ stockCode, stockMarket, pageNum });
+  if (!rsp) return null;
   const { announcements, totalpages, pageNum: repPageNum } = rsp;
   if (!announcements?.length) return null;
   return (
