@@ -312,6 +312,7 @@ export const fetchStockAnnouncement = async ({
     },
   });
   const rsp = (await response.json()) as StockAnnouncementResponse;
+  if (!rsp?.announcements?.length) return null;
   const announcements = rsp.announcements.map((item) => ({
     ...item,
     adjunctUrl: `${JUCAO_STATIC_BASE_URL}/${item.adjunctUrl}`,
