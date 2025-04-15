@@ -1,3 +1,4 @@
+import { NextResponse } from 'next/server';
 import { fetchStockAnnouncement } from '@/services/stockService';
 import { extractPDFTextFromUrl } from '@/services/docService';
 import { chat, generateSummaryPrompt } from '@/services/aiService';
@@ -20,6 +21,12 @@ export async function GET() {
       if (!summary) continue;
     }
   }
+  return NextResponse.json(
+    { message: 'ok' },
+    {
+      status: 200,
+    }
+  );
 }
 
 async function fetchNewAnnouncements({
