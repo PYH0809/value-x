@@ -73,6 +73,7 @@ export class TelegramProvider extends BaseProvider {
       return null;
     }
     const message = payload.message as TelegramMessage;
+    logger.debug(`Received Telegram message entities: ${message.entities}`);
 
     logger.debug(`Received Telegram webhook: ${JSON.stringify(message)}`);
 

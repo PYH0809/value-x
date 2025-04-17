@@ -81,4 +81,10 @@ export type TelegramMessage = {
   };
   date: number;
   text: string;
+  entities: [];
+};
+
+export type TelegramWebhookPayload = {
+  update_id: number;
+  message: TelegramMessage;
 };
