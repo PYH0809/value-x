@@ -65,16 +65,13 @@ async function handleCommand(message: any) {
   }
 }
 
-export async function POST(request: NextRequest, { params }: { params: { provider: string } }) {
-  const { provider } = params;
-
+export async function POST(request: NextRequest) {
   try {
-    logger.info(`Received webhook request for ${provider}`);
     const payload = await request.json();
     const service = await getMessageService();
 
     // 处理webhook请求
-    const message = await service.handleWebhook(provider, payload);
+    const message = await service.handleWebhook('telegram', payload);
 
     if (!message) {
       return NextResponse.json({ status: 'ignored' }, { status: 200 });
@@ -82,7 +79,7 @@ export async function POST(request: NextRequest, { params }: { params: { provide
 
     return NextResponse.json({ status: 'processed' }, { status: 200 });
   } catch (error) {
-    logger.error(`Error processing ${provider} webhook:`, error);
+    logger.error(`Error processing telegram webhook:`, error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
