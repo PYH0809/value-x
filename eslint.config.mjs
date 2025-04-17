@@ -13,6 +13,9 @@ const eslintConfig = [
   ...compat.config({
     extends: ['next', 'prettier', 'next/core-web-vitals', 'next/typescript'],
     plugins: ['react', 'react-hooks', 'prettier'],
+    rules: {
+      '@typescript-eslint/no-explicit-any': 'off',
+    },
   }),
 ];
 
