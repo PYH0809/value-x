@@ -7,7 +7,17 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write \"**/*.+(js|jsx|tsx|json|yml|yaml|css|md|vue)\""
+    "format": "prettier --write \"**/*.+(js|jsx|tsx|json|yml|yaml|css|md|vue)\"",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "**/*.{json,css,md}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@azure-rest/ai-inference": "latest",
@@ -48,6 +58,8 @@
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-react-hooks": "^5.1.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.5.1",
     "postcss": "^8",
     "prettier": "^3.5.2",
     "prettier-plugin-tailwindcss": "^0.6.11",
