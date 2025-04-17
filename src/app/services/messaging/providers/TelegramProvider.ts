@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { Message, InboundMessage, ProviderConfig } from '../types';
+import { Message, InboundMessage, ProviderConfig, TelegramMessage } from '../types';
 import { BaseProvider } from './BaseProvider';
 import { logger } from '@/logger/index';
 
@@ -66,13 +66,13 @@ export class TelegramProvider extends BaseProvider {
   }
 
   async handleWebhook(payload: any): Promise<InboundMessage | null> {
+    logger.debug('Received Telegram webhook payload:', payload);
     // 确保这是一个有效的Telegram更新
     if (!payload || !payload.message) {
       logger.debug('Invalid Telegram webhook payload', payload);
       return null;
     }
-
-    const { message } = payload;
+    const message = payload.message as TelegramMessage;
 
     logger.debug(`Received Telegram webhook: ${JSON.stringify(message)}`);
 

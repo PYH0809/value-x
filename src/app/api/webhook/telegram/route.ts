@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { MessageService } from '@/services/messaging/MessageService';
 import { logger } from '@/logger/index';
+import { InboundMessage } from '@/services/messaging/types';
 
 // 单例消息服务实例
 let messageService: MessageService | null = null;
@@ -26,7 +27,7 @@ const getMessageService = async () => {
 /**
  * 处理命令消息
  */
-async function handleCommand(message: any) {
+async function handleCommand(message: InboundMessage) {
   const service = await getMessageService();
   logger.info(`Handling command: ${message.command}`, { message });
   switch (message.command) {
