@@ -40,7 +40,7 @@ export class TelegramProvider extends BaseProvider {
         }),
       });
       const data = await response.json();
-
+      logger.debug('Telegram API response:', data);
       if (response.ok) {
         this.emitEvent('message:sent', {
           recipient: chatId,
