@@ -36,7 +36,7 @@ export class TelegramProvider extends BaseProvider {
         body: JSON.stringify({
           chat_id: chatId,
           text: content.text,
-          parse_mode: content.html ? 'HTML' : 'Markdown',
+          parse_mode: content.parseMode || 'MarkdownV2',
         }),
       });
       const data = await response.json();

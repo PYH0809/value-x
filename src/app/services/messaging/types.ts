@@ -4,6 +4,7 @@ export type MessageContent = {
   subject?: string;
   text: string;
   html?: string;
+  parseMode?: 'Markdown' | 'MarkdownV2' | 'HTML';
   attachments?: Array<{
     filename: string;
     content: Buffer | string;

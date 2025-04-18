@@ -31,7 +31,7 @@ export class MessageService {
       this.providers.set('telegram', telegramProvider);
 
       // 设置Telegram Webhook (如果启用)
-      if (providerConfigs.telegram.webhook?.enabled) {
+      if (providerConfigs.telegram.webhook?.enabled && process.env.NODE_ENV === 'production') {
         const baseUrl = siteConfig.url || '';
         const webhookUrl = `${baseUrl}${providerConfigs.telegram.webhook.path}`;
         await telegramProvider.setWebhook(webhookUrl);

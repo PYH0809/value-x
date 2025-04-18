@@ -9,6 +9,11 @@ import { logger } from '@/logger/index';
 
 let messageService: MessageService | null = null;
 
+type ChatResult = {
+  summary: string;
+  analysis: string;
+};
+
 export async function GET() {
   // 初始化消息服务
   if (!messageService) {
@@ -19,19 +24,33 @@ export async function GET() {
   const announcements = await fetchNewAnnouncements({
     stockCode: '000858',
     stockMarket: 'SZ',
-    timestamp: Date.now() - 1000 * 60 * 60 * 24 * 6,
+    timestamp: Date.now() - 1000 * 60 * 60 * 24 * 9,
   });
-  if (!announcements) return;
+  if (!announcements) {
+    return NextResponse.json({ message: 'no announcements' }, { status: 200 });
+  }
 
   for (const announcement of announcements) {
     if (announcement.adjunctUrl) {
       const text = await extractPDFTextFromUrl(announcement.adjunctUrl);
       if (!text) continue;
-      const prompt = generateSummaryPrompt(text);
-      const summary = await chat({ content: prompt });
-      if (!summary) continue;
+      const prompt = generateSummaryPrompt({
+        title: announcement.announcementTitle,
+        content: text,
+      });
+      const chatResult = await chat<ChatResult>({ content: prompt, responseType: 'json_object' });
+      if (!chatResult) continue;
+      console.log('summary', chatResult);
 
-      const subscribers = await getSubscribers(announcement.secCode);
+      const isProduction = process.env.NODE_ENV === 'production';
+      const subscribers = isProduction
+        ? await getSubscribers(announcement.secCode)
+        : [
+            {
+              channelUserId: '1093944931',
+              channel: 'telegram',
+            },
+          ];
       if (!subscribers || subscribers.length === 0) continue;
 
       logger.info(`发送公告 "${announcement.announcementTitle}" 到 ${subscribers.length} 个订阅者`);
@@ -40,8 +59,8 @@ export async function GET() {
         try {
           await messageService.sendMessage({
             content: {
-              text: `📊 ${announcement.announcementTitle}\n\n${summary}\n\n📎 查看原文: ${announcement.adjunctUrl}`,
-              html: `<b>📊 ${announcement.announcementTitle}</b><br><br>${summary}<br><br>📎 <a href="${announcement.adjunctUrl}">查看原文</a>`,
+              text: `<b>${announcement.announcementTitle}</b>\n\n${chatResult.summary}\n<blockquote expandable>${chatResult.analysis}</blockquote> <a href="${announcement.adjunctUrl}">查看原文</a>`,
+              parseMode: 'HTML',
             },
             recipient: subscriber.channelUserId,
             options: {

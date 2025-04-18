@@ -4,11 +4,21 @@ import type { GetChatCompletionsBodyParam } from '@azure-rest/ai-inference';
 
 const token = process.env['GITHUB_TOKEN'];
 const endpoint = 'https://models.inference.ai.azure.com';
-const modelName = 'gpt-4.1';
+const defaultModelName = 'gpt-4.1';
 
 const client = ModelClient(endpoint, new AzureKeyCredential(token || ''));
 
-export async function chat({ content, model = modelName }: { content: string; model?: string }) {
+// 根据外部传入的泛型参数，决定返回值类型，默认是 string
+type ChatParms = {
+  content: string;
+  model?: string;
+  responseType?: ResponseType;
+};
+type ChatResult<T> = T extends string ? string : T extends object ? T : string;
+type ResponseType = 'json_object' | 'json_schema' | 'text';
+
+export const chat = async <T>(params: ChatParms): Promise<ChatResult<T>> => {
+  const { content, model = defaultModelName, responseType = 'text' } = params;
   const body: GetChatCompletionsBodyParam['body'] = {
     messages: [
       {
@@ -16,6 +26,9 @@ export async function chat({ content, model = modelName }: { content: string; mo
         content,
       },
     ],
+    response_format: {
+      type: responseType,
+    },
     model,
   };
   const response = await client.path('/chat/completions').post({
@@ -34,5 +47,18 @@ export async function chat({ content, model = modelName }: { content: string; mo
   if (!message || !message.content) {
     throw new Error('No content returned from the model');
   }
-  return message.content;
-}
+  if (responseType === 'json_object') {
+    try {
+      return JSON.parse(message.content) as ChatResult<T>;
+    } catch {
+      throw new Error('Failed to parse JSON response');
+    }
+  } else if (responseType === 'json_schema') {
+    try {
+      return JSON.parse(message.content) as ChatResult<T>;
+    } catch {
+      throw new Error('Failed to parse JSON response');
+    }
+  }
+  return message.content as ChatResult<T>;
+};
