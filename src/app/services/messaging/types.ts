@@ -55,6 +55,7 @@ export type WebhookConfig = {
 export type ProviderConfig = {
   apiKey?: string;
   apiSecret?: string;
+  apiUrl?: string;
   webhook?: WebhookConfig;
 };
 

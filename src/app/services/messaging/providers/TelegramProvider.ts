@@ -28,7 +28,7 @@ export class TelegramProvider extends BaseProvider {
   private async sendSingleMessage(chatId: string, content: any): Promise<boolean> {
     try {
       logger.debug(`Sending Telegram message to ${chatId}`);
-      const response = await fetch(`https://api.telegram.org/bot${this.config.apiKey}/sendMessage`, {
+      const response = await fetch(`${this.config.apiUrl}/bot${this.config.apiKey}/sendMessage`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ export class TelegramProvider extends BaseProvider {
       return true;
     }
     try {
-      const response = await fetch(`https://api.telegram.org/bot${this.config.apiKey}/setWebhook`, {
+      const response = await fetch(`${this.config.apiUrl}/bot${this.config.apiKey}/setWebhook`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

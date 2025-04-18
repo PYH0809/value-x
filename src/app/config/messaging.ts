@@ -3,6 +3,7 @@ import { ProviderConfig } from '@/services/messaging/types';
 const config: Record<string, ProviderConfig> = {
   telegram: {
     apiKey: process.env.TELEGRAM_BOT_TOKEN || '',
+    apiUrl: process.env.TELEGRAM_API_URL || 'https://api.telegram.org',
     webhook: {
       enabled: true,
       path: '/api/webhook/telegram',
